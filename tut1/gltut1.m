@@ -1,6 +1,7 @@
-#import <Cocoa/Cocoa.h>
-#import <OpenGL/OpenGL.h>
-#import "../framework/framework.h"
+#include <OpenGL/gl3.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "../framework/framework.h"
 
 static const float vertexPositions[] = {
     0.75f, 0.75f, 0.0f, 1.0f,
@@ -36,6 +37,7 @@ static void InitializeVertexBuffer(void)
 }
 
 void InitializeProgram(void) {
+    printf("OpenGL initialization function\n");
     size_t shaders_number = 2, i = 0;
     GLuint *shaders_list = malloc(sizeof(GLuint) * shaders_number);
     shaders_list[i++] = CreateShader(GL_VERTEX_SHADER, vertex_shader);
@@ -54,7 +56,7 @@ void initialize_opengl(CGLContextObj cgl_ctx) {
 }
 
 void uninitialize_opengl(CGLContextObj cgl_ctx) {
-    NSLog(@"OpenGL un-initialization function");
+    printf("OpenGL un-initialization function\n");
 }
 
 void reshape (CGLContextObj cgl_ctx, int w, int h) {
