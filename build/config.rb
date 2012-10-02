@@ -30,7 +30,10 @@ def add_clean(binary)
 end
 
 def build_recipe(name)
-  task :default => [name]
+  task :default => [name] do
+    sh "./#{name}"
+  end
+
   add_clean(name)
 
   rule '.o' => '.m' do |t|
