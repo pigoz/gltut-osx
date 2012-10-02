@@ -1,2 +1,2 @@
 require File.join(File.dirname(__FILE__), '..', 'build', 'config.rb')
-lib_recipe(self, "libgl")
+lib_recipe("libgl")

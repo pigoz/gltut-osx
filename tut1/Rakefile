@@ -1,2 +1,2 @@
 require File.join(File.dirname(__FILE__), '..', 'build', 'config.rb')
-app_recipe(self, 'gltut1', :Cocoa, :OpenGL, :QuartzCore)
+app_recipe('gltut1', [:Cocoa, :OpenGL, :QuartzCore])

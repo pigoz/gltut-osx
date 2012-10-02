@@ -1,50 +1,61 @@
 require 'rake/clean'
 
+class RukeConfig
+  attr_accessor :compiler
+end
+
+module Ruke
+  def self.config
+    @config ||= RukeConfig.new
+  end
+end
+
+Ruke.config.compiler ||= 'clang'
+
+def compile_object(target, source)
+  sh "#{Ruke.config.compiler} -c -o #{target} #{source}"
+end
+
+def compile_and_link_object(target, source, cflags)
+  sh "#{Ruke.config.compiler} #{cflags} -o #{target} #{source}"
+end
+
 def frameworks(*fs)
   (['-framework'] * fs.size).zip(fs.map{|f| f.to_s}).join(' ')
 end
 
-def app_recipe(context, name, *frameworks)
-  context.instance_eval do
-    cc = 'clang'
-    cflags = frameworks(*frameworks)
+def add_clean(binary)
+  CLEAN.include('**/*.o')
+  CLEAN.include(binary)
+end
 
-    CLEAN.include('*.o')
-    CLEAN.include(name)
+def build_recipe(name)
+  task :default => [name]
+  add_clean(name)
 
-    task :default => [name]
-
-    src = FileList['**/*.m']
-    framework = FileList['../framework/**/*.m']
-    obj = src.ext('o') + framework.ext('o')
-
-    rule '.o' => '.m' do |t|
-      sh "#{cc} -c -o #{t.name} #{t.source}"
-    end
-
-    file name => obj do
-      sh "#{cc} #{cflags} -o #{name} #{obj}"
-    end
+  rule '.o' => '.m' do |t|
+    compile_object(t.name, t.source)
   end
 end
 
-def lib_recipe(context, name)
-  context.instance_eval do
-    cc = 'clang'
-    CLEAN.include('**/*.o')
-    CLEAN.include(name)
+def target_objects(src_glob, deps_glob)
+  srcs = FileList[src_glob]
+  deps = deps_glob.map {|dg| FileList[dg]}
+  deps.reduce(srcs.ext('o')) {|accu, el| accu + el.ext('o')}
+end
 
-    task :default => [name]
+def app_recipe(name, frameworks)
+  cflags = frameworks(*frameworks)
+  obj = target_objects('**/*.m', ['../framework/**/*.m'])
+  build_recipe(name)
 
-    src = FileList['**/*.m']
-    obj = src.ext('o')
-
-    rule '.o' => '.m' do |t|
-      sh "#{cc} -c -o #{t.name} #{t.source}"
-    end
-
-    file name => obj
-
-    file 'framework.o' => FileList['gui/*.m']
+  file name => obj do
+    compile_and_link_object(name, obj, cflags)
   end
+end
+
+def lib_recipe(name)
+  build_recipe(name)
+  obj = target_objects('**/*.m', [])
+  file name => obj
 end
