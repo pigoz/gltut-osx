@@ -1,23 +1,14 @@
 require 'rake/clean'
 
-class RukeConfig
-  attr_accessor :compiler
+CC  ||= 'clang'
+CPP ||= 'clang++'
+
+def compile_object(target, source, compiler=CC)
+  sh "#{compiler} -c -o #{target} #{source}"
 end
 
-module Ruke
-  def self.config
-    @config ||= RukeConfig.new
-  end
-end
-
-Ruke.config.compiler ||= 'clang'
-
-def compile_object(target, source)
-  sh "#{Ruke.config.compiler} -c -o #{target} #{source}"
-end
-
-def compile_and_link_object(target, source, cflags)
-  sh "#{Ruke.config.compiler} #{cflags} -o #{target} #{source}"
+def compile_and_link_object(target, source, cflags, compiler=CC)
+  sh "#{compiler} #{cflags} -o #{target} #{source}"
 end
 
 def frameworks(*fs)
@@ -39,6 +30,10 @@ def build_recipe(name)
   rule '.o' => '.m' do |t|
     compile_object(t.name, t.source)
   end
+
+  rule '.o' => '.cpp' do |t|
+    compile_object(t.name, t.source, CPP)
+  end
 end
 
 def target_objects(src_glob, deps_glob)
@@ -49,17 +44,18 @@ end
 
 def app_recipe(name, frameworks)
   cflags = frameworks(*frameworks)
-  obj = target_objects('**/*.m', ['../framework/**/*.m'])
+  obj = target_objects(['**/*.m', '**/*.cpp'],
+                       ['../framework/**/*.m', '../framework/**/*.cpp'])
   build_recipe(name)
 
   file name => obj do
-    compile_and_link_object(name, obj, cflags)
+    compile_and_link_object(name, obj, cflags, CPP)
   end
   file name => obj
 end
 
 def lib_recipe(name)
   build_recipe(name)
-  obj = target_objects('**/*.m', [])
+  obj = target_objects(['**/*.m', '**/*.cpp'], [])
   file name => obj
 end

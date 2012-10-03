@@ -1,12 +1,8 @@
 #include "OpenGLView.h"
+#include "../framework.h"
 
 #define NSPIXFMT NSOpenGLPixelFormat
 #define NSCTX    NSOpenGLContext
-
-void initialize_opengl(CGLContextObj cgl_ctx);
-void uninitialize_opengl(CGLContextObj cgl_ctx);
-void reshape (CGLContextObj cgl_ctx, int w, int h);
-void render(CGLContextObj cgl_ctx);
 
 @implementation OpenGLView {
     CVDisplayLinkRef displayLink;

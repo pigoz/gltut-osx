@@ -1,7 +1,9 @@
+#include <OpenGL/OpenGL.h>
 #include <OpenGL/gl3.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <iostream>
+#include <vector>
 #include "../framework/framework.h"
+#include "../framework/shader.hpp"
 
 static const float vertexPositions[] = {
     0.75f, 0.75f, 0.0f, 1.0f,
@@ -33,18 +35,16 @@ static void InitializeVertexBuffer(void)
     glBindBuffer(GL_ARRAY_BUFFER, position_buffer_object);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)*12,
                  vertexPositions, GL_STATIC_DRAW);
-//    ￼￼￼glBindBuffer(GL_ARRAY_BUFFER, 0);
+//  ￼￼￼glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void InitializeProgram(void) {
-    printf("OpenGL initialization function\n");
-    size_t shaders_number = 2, i = 0;
-    GLuint *shaders_list = malloc(sizeof(GLuint) * shaders_number);
-    shaders_list[i++] = CreateShader(GL_VERTEX_SHADER, vertex_shader);
-    shaders_list[i++] = CreateShader(GL_FRAGMENT_SHADER, fragment_shader);
-    shader_program = CreateProgram(shaders_number, shaders_list);
-    for (size_t i = 0; i < shaders_number; i++) glDeleteShader(shaders_list[i]);
-    free(shaders_list);
+    std::cout << "OpenGL initialization function\n" << std::endl;
+    std::vector<GLuint> shaders;
+    shaders.push_back(CreateShader(GL_VERTEX_SHADER, vertex_shader));
+    shaders.push_back(CreateShader(GL_FRAGMENT_SHADER, fragment_shader));
+    shader_program = CreateProgram(shaders);
+    std::for_each(shaders.begin(), shaders.end(), glDeleteShader);
 }
 
 void initialize_opengl(CGLContextObj cgl_ctx) {
@@ -56,7 +56,7 @@ void initialize_opengl(CGLContextObj cgl_ctx) {
 }
 
 void uninitialize_opengl(CGLContextObj cgl_ctx) {
-    printf("OpenGL un-initialization function\n");
+    std::cout << "OpenGL un-initialization function\n" << std::endl;
 }
 
 void reshape (CGLContextObj cgl_ctx, int w, int h) {
