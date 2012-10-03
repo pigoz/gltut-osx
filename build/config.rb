@@ -55,6 +55,7 @@ def app_recipe(name, frameworks)
   file name => obj do
     compile_and_link_object(name, obj, cflags)
   end
+  file name => obj
 end
 
 def lib_recipe(name)
