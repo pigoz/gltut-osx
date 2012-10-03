@@ -13,36 +13,19 @@ static const float vertexPositions[] = {
 
 static GLuint position_buffer_object, vertex_array_object, shader_program;
 
-const char * vertex_shader =
-"#version 330\n"
-"layout(location = 0) in vec4 position;\n"
-"void main()\n"
-"{\n"
-"    gl_Position = position;\n"
-"}\n";
-
-const char * fragment_shader =
-"#version 330\n"
-"out vec4 outputColor;\n"
-"void main()\n"
-"{\n"
-"    outputColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-"}\n";
-
 static void InitializeVertexBuffer(void)
 {
     glGenBuffers(1, &position_buffer_object);
     glBindBuffer(GL_ARRAY_BUFFER, position_buffer_object);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)*12,
                  vertexPositions, GL_STATIC_DRAW);
-//  ￼￼￼glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void InitializeProgram(void) {
     std::cout << "OpenGL initialization function\n" << std::endl;
     std::vector<GLuint> shaders;
-    shaders.push_back(CreateShader(GL_VERTEX_SHADER, vertex_shader));
-    shaders.push_back(CreateShader(GL_FRAGMENT_SHADER, fragment_shader));
+    shaders.push_back(LoadShader(GL_VERTEX_SHADER, "pass_along.vert"));
+    shaders.push_back(LoadShader(GL_FRAGMENT_SHADER, "uniform_color.frag"));
     shader_program = CreateProgram(shaders);
     std::for_each(shaders.begin(), shaders.end(), glDeleteShader);
 }
