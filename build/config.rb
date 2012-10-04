@@ -4,11 +4,19 @@ CC  ||= 'clang'
 CPP ||= 'clang++'
 
 def compile_object(target, source, compiler=CC)
-  sh "#{compiler} -c -o #{target} #{source}"
+  if compiler == CC
+    sh "#{compiler} -c -o #{target} #{source}"
+  else
+    sh "#{compiler} -std=c++0x -stdlib=libc++ -c -o #{target} #{source}"
+  end
 end
 
-def compile_and_link_object(target, source, cflags, compiler=CC)
-  sh "#{compiler} #{cflags} -o #{target} #{source}"
+def link_object(target, source, cflags, compiler=CC)
+  if compiler == CC
+    sh "#{compiler} #{cflags} -o #{target} #{source}"
+  else
+    sh "#{compiler} -stdlib=libc++ #{cflags} -o #{target} #{source}"
+  end
 end
 
 def frameworks(*fs)
@@ -49,7 +57,7 @@ def app_recipe(name, frameworks)
   build_recipe(name)
 
   file name => obj do
-    compile_and_link_object(name, obj, cflags, CPP)
+    link_object(name, obj, cflags, CPP)
   end
   file name => obj
 end
