@@ -47,7 +47,7 @@ void reshape (CGLContextObj cgl_ctx, int w, int h) {
 }
 
 void render(CGLContextObj cgl_ctx) {
-    glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     glUseProgram(shader_program);
