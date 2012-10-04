@@ -11,6 +11,9 @@ extern "C" {
     void uninitialize_opengl(CGLContextObj cgl_ctx);
     void reshape(CGLContextObj cgl_ctx, int w, int h);
     void render(CGLContextObj cgl_ctx);
+
+    float getElapsedTime(void);
+    void  setElapsedTime(float time);
 #ifdef __cplusplus
 }
 #endif

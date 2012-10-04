@@ -11,6 +11,18 @@
 #import "gui/OpenGLWindow.h"
 #import "gui/OpenGLView.h"
 
+static float _time = 0;
+
+float getElapsedTime()
+{
+    return _time;
+}
+
+void setElapsedTime(float time)
+{
+    _time = time;
+}
+
 static NSString *appName(void)
 {
     return [[NSProcessInfo processInfo] processName];

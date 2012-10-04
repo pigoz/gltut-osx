@@ -107,6 +107,9 @@ static CVReturn displayLinkCallback(CVDisplayLinkRef displayLink,
   const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn,
   CVOptionFlags* flagsOut, void* displayLinkContext)
 {
+    float time = ((float)outputTime->videoTime)/((float)outputTime->videoTimeScale);
+    setElapsedTime(time);
+
     [(OpenGLView*)displayLinkContext render];
     return kCVReturnSuccess;
 }
