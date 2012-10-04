@@ -1,7 +1,7 @@
 require 'rake/clean'
 
-CC  ||= 'clang'
-CPP ||= 'clang++'
+CC  = 'clang'
+CPP = 'clang++'
 
 def compile_object(target, source, compiler=CC)
   if compiler == CC
