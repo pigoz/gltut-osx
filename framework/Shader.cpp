@@ -71,8 +71,8 @@ GLuint CreateProgram(const std::vector<GLuint> &shader_list)
 {
     GLuint program = glCreateProgram();
 
-    for(size_t i = 0; i < shader_list.size(); i++)
-        glAttachShader(program, shader_list[i]);
+    for (const GLuint &shader : shader_list)
+        glAttachShader(program, shader);
 
     glLinkProgram(program);
 
@@ -86,8 +86,8 @@ GLuint CreateProgram(const std::vector<GLuint> &shader_list)
         fprintf(stderr, "Linker failure: %s\n", log_str);
     }
 
-    for(size_t i = 0; i < shader_list.size(); i++)
-        glDetachShader(program, shader_list[i]);
+    for (const GLuint &shader : shader_list)
+        glDetachShader(program, shader);
 
     return program;
 }
